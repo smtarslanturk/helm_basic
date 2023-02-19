@@ -1,11 +1,11 @@
-# Default values for nginx-local.
+# Default values for nginx2.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: 14531923/nginx:1.23 #ChangeHere 
+  repository: nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -71,8 +71,8 @@ resources: {}
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 70
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
