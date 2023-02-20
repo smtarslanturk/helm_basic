@@ -1,0 +1,7 @@
+# Values schema reference
+
+auth:
+  rootPassword: "sametPassRoot"
+  database: "samet_db"
+  username: "samet_usr"
+  password: "sametPass"
