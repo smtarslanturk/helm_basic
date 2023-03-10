@@ -231,3 +231,59 @@ helm install <deployment_name> <../chartPath> <nameSpace>
 # Note: 
 templates/NOTES.txt: 
 Burada yazan yazilar bize helm install sonrasinda ekrana yazmaktadir. 
+
+-----------------------------------------------------------------------------
+### Helm Templates ###
+_ .helper.tpl dosyasinda fonksiyonlarin bir kismi tanimlanir. 
+- Yazilan templateler Go dilindi yazilmistir. 
+{{- xxxx }} -> Bir template basladigini bildirir. Dinamik yapidadir. 
+helm template . //var olan template calistirmadan ciktisini verir. 
+{{- .Values.pass}} -> Values.yaml dosyasi icerisine ekledigimiz pass ifadesini ceker. 
+{{- .Values.passq.memleket.isleri}} -> Values.yaml dosyasindan isleri objesini ceker. 
+# Chart Version: {{.Chart.AppVersion}} -> Normlade yorum satiri olarak gormesi gerekir ancak Go degiskenini algiliyor helm. 
+Chart Name: {{- .Chart.Name}}  -> Sol tarafta string varsa - kullan. 
+{{.Chart.Name}} -> Sol tarafta herhangibir string yoksa - mana gerek yok.
+{{.Chart.Name}} -> Bir alt satira indirip yazar. 
+{{- .Chart.Name}} -> Bir alt satira indirmeden yazar. 
+
+{{- include "nginx2.labels" . | nindent 4 }} -> Ilk fonksiyon bir sonrakinin girdisi olur. 
+
+{{.Values.customBlock.auther.adress | default "i am not null" }} -> Deger varsa degeri yazar yoksa "i am not null" yazar. 
+
+{{.Values.customBlock.auther.adress | default "i am not null" | upper }} -> yazilacak olan degerlerin hepsini buyuk olarak yazar. 
+
+{{.Values.customBlock.auther.email | default "i am not null" | upper | quote}} -> En son ciktiyi tirnak icerisine alir.  
+ 
+# Function in Template 
+{{- include "nginx2.labels" . | nindent 4 }}  -> New line indentation on 4 spaces. 
+  {{.Values.customBlock.auther.adress | nindent 4 }} -> iki satir asagi iner ve 4 iceride yazar. 
+  {{- .Values.customBlock.auther.adress | nindent 6 }} -> 1 satir asagi 6 iceri yazar. 
+https://helm.sh/docs/chart_template_guide/function_list/ -> Functionlar hakkinda bilgi almak icin.
+
+# Conditional Logic in Template 
+  {{"test ifStatement" | upper}}
+  {{- if .Values.customBlock.auther.bluen}}
+    {{- "value is present" | nindent 4}}
+  {{- else}}
+    {{- "value is not present" | nindent 4}}
+  {{- end}}
+  -> Eger .Values.customBlock.auther.bluen kismi True ise ilgili stringi yazar. Ama false ise stringi yazmayacaktir. 
+
+  {{- if not .Values.customBlock.auther.bluen}}
+    {{- "value is present" | nindent 4}}
+  {{- else}}
+    {{- "value is not present" | nindent 4}}
+  {{- end}}
+-> bu sefer if not var. If not ifin tersi gibi davranacak gibi dusunulebilir.  
+
+-----------------------------
+  myvalue: "Hello World"
+  drink: {{ .Values.favorite.drink | repeat 5 | quote }}
+  food: {{ .Values.favorite.food | upper | quote }}
+
+  myvalue: "Hello World"
+  drink: "coffeecoffeecoffeecoffeecoffee"
+  food: "PIZZA"
+-----------------------------
+{{ .Values.favorite.drink | default "tea" | quote }} -> Eger yoksa tea yazar. 
+# Type-Cast Values to YAML in template 

@@ -1,5 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
+  name: {{- .Values.customBlock.auther.name }}
+  job: {{- .Values.customBlock.auther.job }}
+  {{.Values.customBlock.auther.adress }}
+  {{.Values.customBlock.auther.adress | default "i am not null" }}
+  {{.Values.customBlock.auther.email | default "i am not null" }}
+  {{.Values.customBlock.auther.adress | default "i am not null" | upper }}
+  {{.Values.customBlock.auther.email | default "i am not null" | upper }}
+  {{.Values.customBlock.auther.email | default "i am not null" | upper | quote}}
+  {{"test nindent" | upper}}
+  {{.Values.customBlock.auther.adress | nindent 4 }}
+  {{.Values.customBlock.auther.adress | nindent 1 }}
+  {{- .Values.customBlock.auther.adress | nindent 2 }}
+  {{- .Values.customBlock.auther.adress | nindent 6 }}
+  {{"test ifStatement" | upper}}
+  {{- if .Values.customBlock.auther.bluen}}
+    {{- "value is present" | nindent 4}}
+  {{- else}}
+    {{- "value is not present" | nindent 4}}
+  {{- end}}
+  {{"test enabled" | upper}}
+  {{- if not .Values.customBlock.auther.enabled }}
+    {{- "value is present" | nindent 4}}
+  {{- else}}
+    {{- "'if not' is working. Normally that's true." | nindent 6}}
+  {{- end}}
+
+{{"Values From Chart: "}}
+  keywords: {{- .Chart.Keywords}}
+  Chart Version: {{- .Chart.AppVersion}}
+  {{.Chart.Name}}
+  {{.Chart.Name}}
+
 metadata:
   name: {{ include "nginx2.fullname" . }}
   labels:
