@@ -32,6 +32,17 @@ kind: Deployment
   {{.Chart.Name}}
   {{.Chart.Name}}
 
+ {{"test with function" | upper}}
+ {{- with .Values.customBlock.auther2}}
+ {{- toYaml . | nindent 2}}
+ {{- end}}
+
+ {{- with .Values.ingress.tls}}
+ {{- toYaml . | nindent 2}}
+ {{- else}}
+ {{"tls sections is empty"}}
+ {{- end}}
+
 metadata:
   name: {{ include "nginx2.fullname" . }}
   labels:

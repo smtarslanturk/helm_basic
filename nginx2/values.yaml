@@ -17,6 +17,12 @@ customBlock:
     # bluen: false
     bluen: true
     enabled: true
+  auther2: 
+    - "Samet" 
+    - "Esra" 
+    - "Gokjan"
+    - "Sumeyye" 
+    -  "Gurkan" 
 
 image:
   repository: nginx

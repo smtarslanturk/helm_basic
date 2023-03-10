@@ -287,3 +287,25 @@ https://helm.sh/docs/chart_template_guide/function_list/ -> Functionlar hakkinda
 -----------------------------
 {{ .Values.favorite.drink | default "tea" | quote }} -> Eger yoksa tea yazar. 
 # Type-Cast Values to YAML in template 
+Dosyadan icinden Array okumak istersek with ibaresini kullanmaliyiz. 
+with blok en son close ile kapatilmalidir. 
+
+ {{"test with function" | upper}}
+ {{- with .Values.customBlock.auther2}}
+ {{- toYaml . | nindent 2}}
+ {{- end}}
+toYaml sayesinde ilgili kisim aktarimi yapilabiliyor. "toYaml" fonksiyonu ise, verilen bir veri yapısını YAML biçimine dönüştürmek için kullanılır. Bu fonksiyon, bir veri yapısını YAML biçiminde bir dizeye dönüştürür. Bu dize daha sonra dosyaya yazılabilir veya bir diğer Helm şablonunda kullanılabilir.
+
+{{- with .Values }}
+metadata:
+  name: {{ .name }}
+  labels:
+    app: {{ .app }}
+  annotations:
+    config: {{ . | toYaml | quote }}
+{{- end }}
+
+{{- with .Values.affinity }}
+affinity:
+  {{- toYaml . | nindent 8 }}
+{{- end }}
