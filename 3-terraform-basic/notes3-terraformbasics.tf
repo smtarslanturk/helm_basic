@@ -117,3 +117,80 @@ variable kitty {
 type = tuple([string, number, bool])
 default = ["cat", 7, true]
 }
+
+
+-------------------------
+###Using Variables in Terraform
+- Eger variable dosyasinda herhangi bir default deger girilmezse, terraform apply komutundan  sonra bizden girdi icin deger soracaktir. 
+Veya terraform degerleri sormadan asagidaki gibi de reaksiyon alinabilir. 
+#terminalden 
+terraform apply -var "filename=/root/pets.txt" -var "content=We love Pets!" -var "prefix=Mrs" -var "separator=." -var "length=2"
+#varialbe export ederek 
+$ export TF_VAR_filename="/root/pets.txt"
+$ export TF_VAR_content="We love pets!"
+$ export TF_VAR_prefix="Mrs"
+$ export TF_VAR_separator="."
+$ export TF_VAR_length="2"
+$ terraform apply
+- Veya diger bir dosya olan terraform.tfvars dosyasina asagideki gibi tanimlama yapilabilir. 
+# terraform.tfvars 
+filename = "/root/pets.txt"
+content = "We love pets!"
+prefix = "Mrs"
+separator = "."
+length = "2"
+#terraform apply -var-file variables.tfvars
+
+! Terminalden verilen degisken her zaman icin en oncelikli degisken olacaktir. Environment olarak atanan degisken ise en az oncelige sahip olacaktir. 
+
+! Terraform follows a variable definition precedence order to determine the value and
+the command line flag of –var or –var-file takes the highest priority.
+
+-------------------------
+### Resource Attributes
+- Gercek hayatta olusturualcak olan kaynak diger kaynaklara bagimliligi olabilir. 
+
+ resource "time_static" "time_update" {
+# rfc3339 (String) Base timestamp in RFC3339 format (see RFC3339 time string e.g., YYYY-MM-DDTHH:MM:SSZ). Defaults to the current time.
+}
+
+ resource "local_file" "time" {
+    filename = "/root/time.txt"
+    content = "Time stamp of this file is ${time_static.time_update.id}"
+}
+
+// Yukaridaki id kismi bizim icin attirbute kismi icin onemli bir oz niteliktir. 
+# terraform show 
+Make use of the terraform show command and identify the attribute values.
+
+-------------------------
+### Resource Dependencies 
+Explicit Dependencies: Bir kaynaga depends on ifadesi eklenirse bu kaynak once diger kaynagin olusmasini bekler. Aslinda Atttibutes kullandigimiz zamanda id ihtiyaci olacagi icin yine beklemesi gerekecek. 
+
+resource "local_file" "pet" {
+filename = var.filename
+content = "My favorite pet is Mr.Cat"
+    depends_on = [
+    random_pet.my-pet
+    ]
+}
+resource "random_pet" "my-pet" {
+prefix = var.prefix
+separator = var.separator
+length = var.length
+}
+
+explicit dependencies: Depends on ifadesini ekledigimiz. hard coded kaynaklarin birbirine bagli oldugu belli olan durum. 
+implicit dependencies: depends on ibaresi kullanilmadan id uzerinden kaynaklari birbirine baglamak. 
+
+# terraform state
+Kayaklar hakkinda bilgi almamizi saglar. Bir cok ek yan komutu vardir. 
+
+### Output Variables ### 
+- Attirbute olarak cektigimiz degerleri output degiskeni olarak tanimlayabilmekteyiz. 
+
+# terraform output 
+Bu komut sayesinde terraform tf dosyasinda olan tanimli degiskenleri goruruz. 
+Ancak bu komutun calisabilmesi icin onceden apply edilmis olmasi gerekir. 
+
+ayrica resource degilde output olarak tanimlanan objeleri ciktilari apply komutu sonrasi terminale basilir. 
